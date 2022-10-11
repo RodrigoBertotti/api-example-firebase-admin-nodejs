@@ -1,5 +1,5 @@
 .idea/*
-#src/environment/*
+src/environment/*
 node_modules/*
 client-side-js-example/node_modules/*
 dist/*
