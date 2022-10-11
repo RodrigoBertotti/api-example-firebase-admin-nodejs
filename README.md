@@ -1,4 +1,4 @@
-# firebase-nodejs-rest-api-example
+# api-example-firebase-nodejs
 
 A Node.js REST API example built with Express and Typescript that can be used as template
 for creation of new servers.
