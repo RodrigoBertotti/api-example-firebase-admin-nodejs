@@ -7,17 +7,13 @@ The main aspects of this sample are:
 
 - A project structure that fits well for new API projects that uses **Firebase Authentication** and **Firestore**
 - Access Control: Restricting routes access with custom claims and checking nuances
-- Reject a request outside the controller easily by throwing `new HttpRequestError(...)`
+- Reject a request outside the controller easily by throwing `new HttpResponseError(status, codeString, message)`
 - Logs: **winston** module is preconfigured to write `.log` files
-- Serialization of objects, so you can easily write on Firestore custom prototypes objects
+- Serialization of objects, so you can easily perform write operations on Firestore of custom prototypes objects
 - Caching: A wrapper function which helps to avoid identical queries on the Firestore Database
 
-**Check also the [Flutter side](https://github.com/WiseTap/flutter_client_for_api_example) 
+:iphone: **Check also the [Flutter side](https://github.com/WiseTap/flutter_client_for_api_example) 
 example which interacts with this API example.**
-
-As any Firebase server, the API has adminstrative priviliges,
-that means the API has full permission to perform changes on the Firestore Database (and 
-other Firebase Resources) regardless how the Firestore Security Rules is configured.
 
 ## Summary
 
@@ -28,19 +24,26 @@ other Firebase Resources) regardless how the Firestore Security Rules is configu
 5. [Logs](#logs)
 6. [Serialization of objects](#serialization-of-objects)
 7. [Caching Firestore results](#caching-firestore-results)
+8. [Reference](#reference)
 
 ## Getting Started
 
 ### Step 1 - Generate your `firebase-credentials.json` file
 
-Go on your Firebase Project > Click on the engine icon
-(on right of "Project Overview") > "Project Settings" > "Service Accounts" > "Firebase Admin SDK" >
-Make sure the "Node.js" option is selected and click on "Generate new private key".
-Rename the downloaded file to `firebase-credentials.json` and move it to inside the
+1) Go to your Firebase Project 
+2) Click on the engine icon (on right of "Project Overview")
+3) "Project Settings"
+4) "Service Accounts"
+5) "Firebase Admin SDK" and make sure the "Node.js" option is selected
+6) Click on "Generate new private key". Rename the downloaded file to `firebase-credentials.json` and move it to inside the
 `environment` folder. 
 
-Keep `firebase-credentials.json` and `environment.ts` local,
-don't commit these files, keep both on `.gitignore`.
+⚠️ Keep `firebase-credentials.json` and `environment.ts` local,
+don't commit these files, keep both on `.gitignore`
+
+As any Firebase server, the API has adminstrative priviliges,
+that means the API has full permission to perform changes on the Firestore Database (and
+other Firebase Resources) regardless how the Firestore Security Rules is configured.
 
 ### Step 2 - To test your server locally:
 
@@ -64,7 +67,7 @@ to start your server locally on port 3000.
 
 ### Step 3 - Interact with your server
 
-Check this [Flutter project](https://github.com/WiseTap/flutter_client_for_api_example) 
+:iphone: Check this [Flutter project](https://github.com/WiseTap/flutter_client_for_api_example) 
 to interact with the server,
 you can also create your own client that uses the Firebase Authentication
 library, like React, Angular, Vue, etcetera.
@@ -97,7 +100,7 @@ Firebase Authentication library for the client side.
     ));
     // dioLoggedIn.get('/user').then(...);
 
-[Click here](https://github.com/WiseTap/flutter_client_for_api_example)
+:iphone: [Click here](https://github.com/WiseTap/flutter_client_for_api_example)
 to check a Flutter client example for this API
 
 ---
@@ -133,7 +136,7 @@ Is this enough? Not always, so let's check the next section [Errors and permissi
 
 ## Errors and permissions
 
-You can easily send a 400 / 500 HTTP response to the client
+You can easily send an HTTP response with code between 400 and 500 to the client
 by simply throwing a `new HttpResponseError(...)` on your controller, service or repository,
 for example:
 
@@ -233,7 +236,7 @@ and try to save directly on Firestore:
     Firestore doesn't support JavaScript objects with custom prototypes 
     (i.e. objects that were created via the "new" operator).
 
-To fix this problem, this project has a function called `serializeFS(...)` which
+To fix this problem, this project has a function called `serializeFS(object)` which
 accepts an object as param.
 
     await db().collection('products').doc().set(serializeFS(new ProductEntity(...)));
@@ -250,7 +253,7 @@ return the exact same `product` as response.
 The commom solution is to pass the cached data as param on different functions.
 This project also offers an alternative way of caching:
 
-You can use `req.cacheOf(...)` in the request handler to wrap a function into
+You can use `req.cacheOf(cacheId, function)` in the request handler to wrap a function into
 a new function that will cache the result, in this way, a cache will be created in the
 first time this function is called and will be used as result when this function is called 
 again.
@@ -262,11 +265,18 @@ again.
 
 The cache will be valid for a single request handler, so you will not have
 problems of inconsistent cache on different requests, because 
-each request has its own canche.
+each request has its own cache.
 
 But if the data changes, and you want to invalidate the cache on that
-request handler, you can do so by informing the `cacheId`, as follows:
+request handler, you can call `req.invalidateCache(cacheId)`, for example:
 
     req.invalidateCache('productId_param');
 
 Calling `req.invalidateCache` will not affect the other requests.
+
+---
+
+## Reference
+
+This project based part of the structure of the GitHub project [node-typescript-restify](https://github.com/vinicostaa/node-typescript-restify).
+Thank you [developer](https://github.com/vinicostaa/)!
