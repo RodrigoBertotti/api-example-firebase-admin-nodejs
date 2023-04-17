@@ -82,20 +82,20 @@ We are done! Customize this API on your way!
 
 Firebase Authentication is used to verify
 if the client is authenticated on Firebase Authentication,
-to do so, the client side should inform the `auth-token` header:
+to do so, the client side should inform the `Authorization` header:
 
-### `auth-token` Header
+### `Authorization` Header
 
-The client's token on Firebase Authentication, it can be obtained
-in the client side after the authentication is performed with the
+The client's token on Firebase Authentication in the format `Bearer <token>`, 
+it can be obtained in the client side after the authentication is performed with the
 Firebase Authentication library for the client side.
 
-### Flutter Client Example on how to get the `auth-token`:
+### Flutter Client Example on how to get the `Authorization`:
 
     final dioLoggedIn = Dio(BaseOptions(
         baseUrl: 'https://myapi.example.com',
         headers: {
-            'auth-token': await FirebaseAuth.instance.currentUser.getIdToken() 
+             "Authorization": "Bearer ${(await FirebaseAuth.instance.currentUser!.getIdToken())}"
         }
     ));
     // dioLoggedIn.get('/user').then(...);
@@ -170,7 +170,7 @@ express request handler:
 type: `boolean`
 
 Is true only if the client is authenticated, that means, the client
-informed `auth-token` on the headers, and these
+informed `Authorization` on the headers, and these
 values were successfully validated.
 
 ### `req.auth` 
