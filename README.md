@@ -1,6 +1,6 @@
 # api-example-firebase-nodejs
 
-A Node.js REST API example that uses Firebase, built with Express and Typescript that can be used as template for the creation of new servers.
+A Node.js REST API example that uses Firebase Admin, built with Express and Typescript that can be used as template for the creation of new servers.
 
 The main aspects of this sample are:
 
