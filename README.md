@@ -1,6 +1,6 @@
-# api-example-firebase-nodejs
+# api-example-firebase-admin-nodejs
 
-A Node.js REST API example that uses Firebase, built with Express and Typescript that can be used as template for the creation of new servers.
+A Node.js REST API example that uses Firebase Admin, built with Express and Typescript that can be used as template for the creation of new servers.
 
 The main aspects of this sample are:
 
@@ -11,7 +11,7 @@ The main aspects of this sample are:
 - Serialization of objects, so you can easily perform write operations on Firestore of custom prototypes objects
 - Caching: A wrapper function which helps to avoid identical queries on the Firestore Database
 
-:iphone: **Check also the [Flutter side](https://github.com/WiseTap/flutter_client_for_api_example) 
+:iphone: **Check also the [Flutter side](https://github.com/RodrigoBertotti/flutter_client_for_api_example) 
 example which interacts with this API example.**
 
 ## Summary
@@ -66,7 +66,7 @@ to start your server locally on port 3000.
 
 ### Step 3 - Interact with your server
 
-:iphone: Check this [Flutter project](https://github.com/WiseTap/flutter_client_for_api_example) 
+:iphone: Check this [Flutter project](https://github.com/RodrigoBertotti/flutter_client_for_api_example) 
 to interact with the server,
 you can also create your own client that uses the Firebase Authentication
 library, like React, Angular, Vue, etcetera.
@@ -99,7 +99,7 @@ Firebase Authentication library for the client side.
     ));
     // dioLoggedIn.get('/user').then(...);
 
-:iphone: [Click here](https://github.com/WiseTap/flutter_client_for_api_example)
+:iphone: [Click here](https://github.com/RodrigoBertotti/flutter_client_for_api_example)
 to check a Flutter client example for this API
 
 ---
