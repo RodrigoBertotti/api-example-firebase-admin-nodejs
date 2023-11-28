@@ -47,7 +47,7 @@ export class ProductController implements Controller {
     }
 
     private readonly getProductByIdFull: RequestHandler = async (req, res, next,) => {
-        const getProductByIdCached = req.cacheOf('productId_param', productsRepository.getProductById);
+        const getProductByIdCached = req.cacheOf(req.params['productId'], productsRepository.getProductById);
         const product = await getProductByIdCached(req.params['productId']);
         if(product == null){
             throw new HttpResponseError(404, 'NOT_FOUND', 'Product ID '+req.params['productId'] + ' not found');
@@ -65,7 +65,7 @@ export class ProductController implements Controller {
         }
 
         // If there's a cache: it will use the cache, otherwise: it will wait for the getProductById result and cache it
-        const getProductByIdCached = req.cacheOf('productId_param', productsRepository.getProductById);
+        const getProductByIdCached = req.cacheOf(req.params['productId'], productsRepository.getProductById);
         const product = await getProductByIdCached(req.params['productId']);
 
         if (product == null) {

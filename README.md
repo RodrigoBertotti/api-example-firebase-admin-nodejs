@@ -259,7 +259,7 @@ again.
 
     // If there's a cache: it will use the cache, otherwise: it will wait for the getProductById result and cache it
     const getProductByIdCached = req
-        .cacheOf('productId_param', productsRepository.getProductById); // <-- Wrapped with a cache function
+        .cacheOf(req.params['productId'], productsRepository.getProductById); // <-- Wrapped with a cache function
     const product = await getProductByIdCached(req.params['productId']);
 
 The cache will be valid for a single request handler, so you will not have
@@ -269,7 +269,7 @@ each request has its own cache.
 But if the data changes, and you want to invalidate the cache on that
 request handler, you can call `req.invalidateCache(cacheId)`, for example:
 
-    req.invalidateCache('productId_param');
+    req.invalidateCache(req.params['productId']);
 
 Calling `req.invalidateCache` will not affect the other requests.
 
