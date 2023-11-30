@@ -74,7 +74,7 @@ to start your server locally on port 3000.
 
 3. Copy the **apiKey** field
 
-4. Download the <a id="raw-url" download href="https://raw.githubusercontent.com/RodrigoBertotti/api-example-firebase-nodejs/dev/postman_collection.json">Postman Collection</a> and import to your Postman
+4. Download the [postman_collection.json file](postman_collection.json) and import it to your Postman
 
 5. Test creating an account first, after that, go to the Login request 
 example and pass the `apiKey` as query parameter
