@@ -1,10 +1,6 @@
 import {DecodedIdToken, UserRecord} from "firebase-admin/lib/auth";
+import {MyClaims} from "../index";
 
-export type CacheOfFunction = typeof _CacheOfFunctionType;
-
-function _CacheOfFunctionType<T, TProducer extends Producer<T>>(cacheId:string, generateCacheIfIsNeeded?: TProducer, oldCache?: 'use-old-cache'|'override-cache'): TProducer {
-    throw 'TYPE ONLY (implementation is other file)';
-}
 
 declare global {
     namespace Express {
@@ -19,17 +15,11 @@ declare global {
             token?: DecodedIdToken,
 
             /**
-             * Caches the result of a function based on the `cacheId` param.
-             * Helps to avoid perfoming multiple identical queries to the repository on the same request handler
-             *  */
-            cacheOf: CacheOfFunction,
-
-            /**
-             * Invalidate a cache based on the `cacheId` param
-             *
-             * This will not affect the other requests.
-             * */
-            invalidateCache: (cacheId:string) => void,
+             * Refers to the claims from the user that is performing the request,
+             * if the user is authenticated with Firebase, this object also includes the claims from `auth.claims` */
+            claims?: {
+                [MyClaims]: true | undefined,
+            }
         }
     }
 }

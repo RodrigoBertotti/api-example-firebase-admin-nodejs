@@ -1,11 +1,17 @@
+// noinspection HttpUrlsUsage
+
 import express, {Express,} from 'express';
-import {interceptors} from "./interceptors";
 import {log} from "./utils/logger";
-import bodyParser from "body-parser";
 import * as admin from "firebase-admin";
 import {environment} from "./environment/environment";
-import {HttpServer} from "./controllers";
-import {CONTROLLERS} from "./controllers/controllers";
+import {interceptors} from "./middleware/interceptors";
+import {HttpServer} from "./middleware/controllers";
+import {myIPv4} from "./utils/ipv4";
+import {getControllers} from "./middleware/controllers/controllers";
+
+export type UserRole = "storeOwner" | "buyer";
+export type MyClaims = 'authenticated' | UserRole; // TODO: add OR operation with our own claims;
+
 
 if(!environment?.firebase?.credentials?.project_id?.length){
     throw Error('Missing Firebase Credentials. Please, check the "Getting Started" section');
@@ -21,17 +27,14 @@ const app: Express = express();
 const httpServer = new HttpServer(app);
 const port = process.env.PORT || 3000;
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
 for(let i=0;i<interceptors.length;i++){
     app.use(interceptors[i]);
 }
 
-CONTROLLERS.forEach((controller) => {
+getControllers().forEach((controller) => {
    controller.initialize(httpServer);
 });
 
 app.listen(port, () => {
-    log(`⚡️[server]: Server is running at https://localhost:${port}`);
+    log(`⚡️ Server is running at http://${myIPv4()}:${port}`);
 });

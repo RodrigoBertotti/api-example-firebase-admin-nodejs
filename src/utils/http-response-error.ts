@@ -8,9 +8,6 @@ export class HttpResponseError extends Error {
         public readonly internalLog:string = description,
     ) {
         super(`(HttpResponseError) status: "${status}" code: "${code}" description: "${description}"`);
-        if(status && status < 400){
-            throw Error(`HttpResponseError: invalid error, status is "${status}"`);
-        }
     }
 }
 

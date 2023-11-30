@@ -8,11 +8,6 @@ The main aspects of this sample are:
 - Access Control: Restricting routes access with custom claims and checking nuances
 - Reject a request outside the controller easily by throwing `new HttpResponseError(status, codeString, message)`
 - Logs: **winston** module is preconfigured to write `.log` files
-- Serialization of objects, so you can easily perform write operations on Firestore of custom prototypes objects
-- Caching: A wrapper function which helps to avoid identical queries on the Firestore Database
-
-:iphone: **Check also the [Flutter side](https://github.com/RodrigoBertotti/flutter_client_for_api_example) 
-example which interacts with this API example.**
 
 ## Summary
 
@@ -21,13 +16,20 @@ example which interacts with this API example.**
 3. [Access Control](#access-control-custom-claims)
 4. [Errors and permissions](#errors-and-permissions)
 5. [Logs](#logs)
-6. [Serialization of objects](#serialization-of-objects)
-7. [Caching Firestore results](#caching-firestore-results)
-8. [Reference](#reference)
+6. [Reference](#reference)
 
 ## Getting Started
 
-### Step 1 - Generate your `firebase-credentials.json` file
+# Configure the Firebase Console
+
+In the Firebase Console
+ 
+Go to Build > Authentication > Get Started > Sign-in method > Email/Password and enable Email/Password and save it.
+
+Also go to Build > Firestore Database > Create database. You can choose the option `Start in test mode`.
+
+
+### Step 2 - Generate your `firebase-credentials.json` file
 
 1) Go to your Firebase Project 
 2) Click on the engine icon (on right of "Project Overview")
@@ -40,11 +42,11 @@ example which interacts with this API example.**
 ⚠️ Keep `firebase-credentials.json` and `environment.ts` local,
 don't commit these files, keep both on `.gitignore`
 
-As any Firebase server, the API has adminstrative priviliges,
+As any Firebase server, the API has administrative privileges,
 that means the API has full permission to perform changes on the Firestore Database (and
-other Firebase Resources) regardless how the Firestore Security Rules is configured.
+other Firebase Resources) regardless of how the Firestore Security Rules are configured.
 
-### Step 2 - To test your server locally:
+### Step 3 - To test your server locally:
 
 This command will start and restart your server as code changes are made,
 do not use on production
@@ -54,7 +56,7 @@ do not use on production
 Let's run `npm install` to install the dependencies and `npm run dev` 
 to start your server locally on port 3000.
 
-#### Other commands for production environment
+#### Other commands for the production environment
 
 #### To build your server:
 
@@ -64,45 +66,61 @@ to start your server locally on port 3000.
 
     npm run start
 
-### Step 3 - Interact with your server
+### Step 4 - Use Postman to test it
 
-:iphone: Check this [Flutter project](https://github.com/RodrigoBertotti/flutter_client_for_api_example) 
-to interact with the server,
-you can also create your own client that uses the Firebase Authentication
-library, like React, Angular, Vue, etcetera.
+1. In the Firebase Console > Go to Project Overview and Click on the **Web** platform to Add a new Platform
 
-### Step 4 - Your time!
+2. Add a Nickname like "Postman" and click on Register App
 
-We are done! Customize this API on your way!
+3. Copy the **apiKey** field
 
----
+4. Download the <a id="raw-url" download href="https://raw.githubusercontent.com/RodrigoBertotti/api-example-firebase-nodejs/dev/postman_collection.json">Postman Collection</a> and import to your Postman
+
+5. Test creating an account first, after that, go to the Login request 
+example and pass the `apiKey` as query parameter
+
+6. Copy the `idToken` and pass it, and pass it as header of the other requests, the header name is also `idToken`.
+
+### 🚫 Permission errors
+
+- #### "Only storeOwner can access"
+Means you are not logged with a `buyer` claim rather
+than with a user that contains the  `storeOwner` claim.
+
+- #### "You aren't the correct storeOwner"
+Means you are logged with the correct claim, but you are trying to read others storeOwner's data.
+
+- #### "Requires authentication"
 
 ## Authentication
 
 Firebase Authentication is used to verify
 if the client is authenticated on Firebase Authentication,
-to do so, the client side should inform the `Authorization` header:
+to do so, the client side should inform the `isToken` header:
 
-### `Authorization` Header
+### `idToken` Header
 
-The client's token on Firebase Authentication in the format `Bearer <token>`, 
-it can be obtained in the client side after the authentication is performed with the
-Firebase Authentication library for the client side.
+The client's token on Firebase Authentication, 
+it can be obtained on the client side after the authentication is performed with the
+Firebase Authentication library for the client side,
 
-### Flutter Client Example on how to get the `Authorization`:
+The `idToken` can be generated by the client side only.
 
-    final dioLoggedIn = Dio(BaseOptions(
-        baseUrl: 'https://myapi.example.com',
-        headers: {
-             "Authorization": "Bearer ${(await FirebaseAuth.instance.currentUser!.getIdToken())}"
-        }
-    ));
-    // dioLoggedIn.get('/user').then(...);
+#### Option 1: Generating `idToken` with Postman:
 
-:iphone: [Click here](https://github.com/RodrigoBertotti/flutter_client_for_api_example)
-to check a Flutter client example for this API
+Follow the previous instructions on [Step 4 - Use Postman to test it](#step-4---use-postman-to-test-it)
 
----
+#### Option 2: Generating `idToken` with a Flutter Client:
+```dart
+final idToken = await FirebaseAuth.instance.currentUser!.getIdToken();
+// use idToken as header
+```
+
+#### Option 3: Generating `idToken` with a Web Client:
+```javascript
+const idToken = await getAuth(firebaseApp).currentUser?.getIdToken();
+// use idToken as header
+```
 
 ## Access Control (custom claims)
 
@@ -111,27 +129,29 @@ define which routes the users have access to.
 
 ### Define custom claims to a user
 
-This can be done in the server like bellow:
-
-    await admin.auth().setCustomUserClaims(user.uid, {
-         storeOwner: true,
-         buyer: false
-    });
-
+This can be done in the server like below:
+```javascript
+await admin.auth().setCustomUserClaims(user.uid, {
+    storeOwner: true,
+    buyer: false
+});
+```
 ### Configuring the routes
 
 You can set a param (array of strings) on the `httpServer.<method>`
 function, like:
 
-    httpServer.get ('/product/:productId/full-details', 
-      this.getProductByIdFull.bind(this), ['storeOwner']);
+```javascript
+httpServer.get (
+    '/product/:productId/full-details', 
+    this.getProductByIdFull.bind(this), ['storeOwner']
+);
+```
 
 In the example above, only users with the `storeOwner` custom claim will
 have access to the `/product/:productId/full-details` path.
 
 Is this enough? Not always, so let's check the next section [Errors and permissions](#errors-and-permissions).
-
----
 
 ## Errors and permissions
 
@@ -139,26 +159,28 @@ You can easily send an HTTP response with code between 400 and 500 to the client
 by simply throwing a `new HttpResponseError(...)` on your controller, service or repository,
 for example:
 
-    throw new HttpResponseError(400, 'BAD_REQUEST', "Missing 'name'");
+```javascript
+throw new HttpResponseError(400, 'BAD_REQUEST', "Missing 'name' field on the body");
+```
 
-Sometimes defining roles isn't enough to assure that a user can't 
+Sometimes defining roles isn't enough to ensure that a user can't 
 access or modify a specific data,
-let's imagine if a storeOwner tries to get full details
-of a product he is not selling, like a product of another storeOwner,
+let's imagine if a store owner tries to get full details
+of a product he is not selling, like a product of another store owner,
 he still has access to the route because of his `storeOwner` custom claim,
 but an additional verification is needed.
 
-    if (product.storeOwnerUid != req.auth!.uid) {
-        throw new HttpResponseError(
-            403, 
-            'FORBIDDEN', 
-            `Even though you are a storeOwner,
-            you are a owner of another store,
-            so you can't see full details of this product`
-        );
-    }
-
----
+```javascript
+if (product.storeOwnerUid != req.auth!.uid) {
+    throw new HttpResponseError(
+        403, 
+        'FORBIDDEN', 
+        `Even though you are a store owner,
+        you are a owner of another store,
+        so you can't see full details of this product`
+    );
+}
+```
 
 ## Authentication fields
 
@@ -168,8 +190,8 @@ express request handler:
 ### `req.authenticated` 
 type: `boolean`
 
-Is true only if the client is authenticated, that means, the client
-informed `Authorization` on the headers, and these
+Is true only if the client is authenticated, which means, the client
+informed `idToken` on the headers, and these
 values were successfully validated.
 
 ### `req.auth` 
@@ -182,19 +204,17 @@ type: [DecodedIdToken](https://firebase.google.com/docs/reference/admin/node/fir
 
 If authenticated: Contains token data of Firebase Authentication.
 
----
-
 ## Logs
 
 You can save logs into a file by importing these functions of the `src/utils/logger.ts` file
 and using like:
-
-    log("this is a info", "info");
-    logDebug("this is a debug");
-    logInfo("this is a info");
-    logWarn("this is a warn");
-    logError("this is a error");
-
+```javascript
+log("this is a info", "info");
+logDebug("this is a debug");
+logInfo("this is a info");
+logWarn("this is a warn");
+logError("this is a error");
+```
 By default, a `logs` folder will be generated
 aside this project folder, in this structure:
 
@@ -213,69 +233,32 @@ aside this project folder, in this structure:
 Each `.log` file contains the logs of the respective day.
 
 You can also go to `src/utils/logger.ts` and check `logsFilename` and `logsPathAndFilename` fields
-to change the default path and filename so the logs can be saved with a different file name and
+to change the default path and filename so the logs can be saved with a different filename and
 in a different location.
 
 By default, regardless of the log level, all logs will be saved in the same file,
 you can also change this behavior on the `winston.createLogger(transports: ...)` line of 
 the `src/utils/logger.ts` file. 
 
----
+## Getting in touch
 
-## Serialization of objects
+Feel free to open a GitHub issue about:
 
-You will get an error if you create your own class, instantiate an object of it
-and try to save directly on Firestore:
+- :grey_question: questions
 
+- :bulb: suggestions
 
-    await db().collection('products').doc().set(new ProductEntity(...));
+- :ant: potential bugs
 
-    Error: Value for argument "data" is not a valid Firestore document.
-    Couldn't serialize object of type "ProductEntity". 
-    Firestore doesn't support JavaScript objects with custom prototypes 
-    (i.e. objects that were created via the "new" operator).
+## License
 
-To fix this problem, this project has a function called `serializeFS(object)` which
-accepts an object as param.
-
-    await db().collection('products').doc().set(serializeFS(new ProductEntity(...)));
-
----
-
-## Caching Firestore results
-
-Sometimes you need to fetch for the same data on the database in two or more
-functions, you may need to fetch for `product` in the database
-to check if the client has permission to read it, and if so, you may want to
-return the exact same `product` as response.
-
-The commom solution is to pass the cached data as param on different functions.
-This project also offers an alternative way of caching:
-
-You can use `req.cacheOf(cacheId, function)` in the request handler to wrap a function into
-a new function that will cache the result, in this way, a cache will be created in the
-first time this function is called and will be used as result when this function is called 
-again.
-
-    // If there's a cache: it will use the cache, otherwise: it will wait for the getProductById result and cache it
-    const getProductByIdCached = req
-        .cacheOf(req.params['productId'], productsRepository.getProductById); // <-- Wrapped with a cache function
-    const product = await getProductByIdCached(req.params['productId']);
-
-The cache will be valid for a single request handler, so you will not have
-problems of inconsistent cache on different requests, because 
-each request has its own cache.
-
-But if the data changes, and you want to invalidate the cache on that
-request handler, you can call `req.invalidateCache(cacheId)`, for example:
-
-    req.invalidateCache(req.params['productId']);
-
-Calling `req.invalidateCache` will not affect the other requests.
-
----
+[MIT](LICENSE)
 
 ## Reference
 
-This project based part of the structure of the GitHub project [node-typescript-restify](https://github.com/vinicostaa/node-typescript-restify).
+This project used as reference part of the structure of the GitHub project [node-typescript-restify](https://github.com/vinicostaa/node-typescript-restify).
 Thank you [developer](https://github.com/vinicostaa/)!
+
+## Contacting me
+
+📧 rodrigo@wisetap.com

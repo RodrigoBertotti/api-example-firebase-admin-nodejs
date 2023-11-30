@@ -1,0 +1,303 @@
+{
+	"info": {
+		"_postman_id": "2ec80f17-9a24-4687-8eca-fabffa02bd20",
+		"name": "api-example-firebase-admin-nodejs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Create Account",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\":\"Rodrigo\",\n    \"role\":\"storeOwner\",\n    \"email\": \"rodrigo+6@wisetap.com\",\n    \"password\": \"123456\",\n    \"birthDateMillisecondsSinceEpoch\": 812469600000\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://192.168.0.8:3000/account",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"0",
+						"31"
+					],
+					"port": "3000",
+					"path": [
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. Login on Google APIS",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"rodrigo@wisetap.com\",\n    \"password\":\"123456\",\n    \"returnSecureToken\":true\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key={apiKey}",
+					"protocol": "https",
+					"host": [
+						"www",
+						"googleapis",
+						"com"
+					],
+					"path": [
+						"identitytoolkit",
+						"v3",
+						"relyingparty",
+						"verifyPassword"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{apiKey}",
+							"description": "The \"apiKey\" field from Firebase Credentials (Client side). Check the README file for more info"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Create Product",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "idToken",
+						"value": "",
+						"description": "Insert your idToken here",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Blouse\",\n    \"price\": 20.60,\n    \"stockQuantity\": 100,\n    \"internalCode\": \"An example of field that only the storeOwner (of this store) can see\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://192.168.0.8:3000/product",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"0",
+						"31"
+					],
+					"port": "3000",
+					"path": [
+						"product"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4. Get All Products Public",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "idToken",
+						"value": "",
+						"type": "text",
+						"description": "Insert your idToken here"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://192.168.0.8:3000/all-products-public",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"0",
+						"31"
+					],
+					"port": "3000",
+					"path": [
+						"all-products-public"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5. Get Public Product by ID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "idToken",
+						"value": "",
+						"type": "text",
+						"description": "Insert your idToken here"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://192.168.0.8:3000/product/:productId",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"0",
+						"31"
+					],
+					"port": "3000",
+					"path": [
+						"product",
+						":productId"
+					],
+					"variable": [
+						{
+							"key": "productId",
+							"value": "<productId>"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6. Get Full Product by ID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "idToken",
+						"value": "",
+						"type": "text",
+						"description": "Insert your idToken here"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://192.168.0.8:3000/product/:productId/full-details",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"0",
+						"31"
+					],
+					"port": "3000",
+					"path": [
+						"product",
+						":productId",
+						"full-details"
+					],
+					"variable": [
+						{
+							"key": "productId",
+							"value": "<productId>"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7. Update Product",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "idToken",
+						"value": "",
+						"type": "text",
+						"description": "Insert your idToken here"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"price\": 33\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://192.168.0.8:3000/product/:productId",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"0",
+						"31"
+					],
+					"port": "3000",
+					"path": [
+						"product",
+						":productId"
+					],
+					"variable": [
+						{
+							"key": "productId",
+							"value": "<productId>"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

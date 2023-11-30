@@ -1,5 +1,6 @@
-import winston, {Logger} from "winston";
+import winston, {format, Logger} from "winston";
 import path from "path";
+const { combine, timestamp, label, printf } = format;
 
 
 /**
@@ -34,6 +35,10 @@ function projectName () {
 
 let loggerDay:number = -1;
 let _logger: Logger;
+
+const myFormat = printf(({ level, message, label, timestamp }) => {
+    return `${timestamp} [${level}]: ${message}`;
+});
 export function logger()  {
     const currentDay = new Date().getDate();
     if(loggerDay != currentDay) {
@@ -42,17 +47,17 @@ export function logger()  {
 
         const logsFilename = `${new Date().getFullYear()}-${(new Date().getMonth() + 1)}-${(new Date().getDate())}.log`; // filename example: "2022-10-8.log"
         const logsPathAndFilename = path.join(`../logs`, projectName(), logsFilename);
+        const format = combine(timestamp(), myFormat);
 
         _logger = winston.createLogger({
             transports: [
-                new winston.transports.File({filename: logsPathAndFilename, level: 'silly' as Level}),
-                new winston.transports.File({filename: logsPathAndFilename, level: 'debug' as Level}),
-                new winston.transports.File({filename: logsPathAndFilename, level: 'verbose' as Level}),
-                new winston.transports.File({filename: logsPathAndFilename, level: 'http' as Level}),
-                new winston.transports.File({filename: logsPathAndFilename, level: 'info' as Level}),
-                new winston.transports.File({filename: logsPathAndFilename, level: 'warn' as Level}),
-                new winston.transports.File({filename: logsPathAndFilename, level: 'error' as Level}),
-            ]
+                new winston.transports.File({filename: logsPathAndFilename, level: 'debug' as Level, format: format}),
+                new winston.transports.File({filename: logsPathAndFilename, level: 'verbose' as Level, format: format}),
+                new winston.transports.File({filename: logsPathAndFilename, level: 'http' as Level, format: format}),
+                new winston.transports.File({filename: logsPathAndFilename, level: 'info' as Level, format: format}),
+                new winston.transports.File({filename: logsPathAndFilename, level: 'warn' as Level, format: format}),
+                new winston.transports.File({filename: logsPathAndFilename, level: 'error' as Level, format: format}),
+            ],
         });
     }
     return _logger;
@@ -65,8 +70,7 @@ export type Level =
     'info' |
     'http' |
     'verbose' |
-    'debug' |
-    'silly';
+    'debug' ;
 
 export function log(message, level:Level = 'debug') {
     console.log(message);
