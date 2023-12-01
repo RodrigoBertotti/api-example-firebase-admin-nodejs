@@ -9,19 +9,6 @@ The main aspects of this sample are:
 - Reject a request outside the controller easily by throwing `new HttpResponseError(status, codeString, message)`
 - Logs: **winston** module is preconfigured to write `.log` files
 
-## Summary
-
-1. [Getting Started](#getting-started)
-2. [Authentication](#authentication)
-3. [Access Control](#access-control)
-4. [Errors and permissions](#errors-and-permissions)
-5. [Authentication fields on Express Request Handler](#authentication-fields-on-express-request-handler)
-6. [Logs](#logs)
-7. [Getting in touch](#getting-in-touch)
-8. [License](#license)
-9. [Reference](#reference)
-10. [Contacting me](#contacting-me)
-
 ## Getting Started
 
 ### Step 1 -Configure the Firebase Console
