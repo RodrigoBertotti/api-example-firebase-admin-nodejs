@@ -13,21 +13,24 @@ The main aspects of this sample are:
 
 1. [Getting Started](#getting-started)
 2. [Authentication](#authentication)
-3. [Access Control](#access-control-custom-claims)
+3. [Access Control](#access-control)
 4. [Errors and permissions](#errors-and-permissions)
-5. [Logs](#logs)
-6. [Reference](#reference)
+5. [Authentication fields on Express Request Handler](#authentication-fields-on-express-request-handler)
+6. [Logs](#logs)
+7. [Getting in touch](#getting-in-touch)
+8. [License](#license)
+9. [Reference](#reference)
+10. [Contacting me](#contacting-me)
 
 ## Getting Started
 
-# Configure the Firebase Console
+### Step 1 -Configure the Firebase Console
 
 In the Firebase Console
  
 Go to Build > Authentication > Get Started > Sign-in method > Email/Password and enable Email/Password and save it.
 
 Also go to Build > Firestore Database > Create database. You can choose the option `Start in test mode`.
-
 
 ### Step 2 - Generate your `firebase-credentials.json` file
 
@@ -81,17 +84,6 @@ example and pass the `apiKey` as query parameter
 
 6. Copy the `idToken` and pass it as header for the other requests, the header name is `Authorization`.
 
-### 🚫 Permission errors
-
-- #### "Only storeOwner can access"
-Means you are not logged with a `buyer` claim rather
-than with a user that contains the  `storeOwner` claim.
-
-- #### "You aren't the correct storeOwner"
-Means you are logged with the correct claim, but you are trying to read others storeOwner's data.
-
-- #### "Requires authentication"
-
 ## Authentication
 
 Firebase Authentication is used to verify
@@ -122,7 +114,7 @@ const idToken = await getAuth(firebaseApp).currentUser?.getIdToken();
 // use idToken as `Authorization` header value in the format "Bearer <idToken>"
 ```
 
-## Access Control (custom claims)
+## Access Control
 
 This project uses custom claims on Firebase Authentication to
 define which routes the users have access to.
@@ -182,10 +174,22 @@ if (product.storeOwnerUid != req.auth!.uid) {
 }
 ```
 
-## Authentication fields
+### 🚫 Permission errors
+
+- #### "Only storeOwner can access"
+Means you are not logged with a `buyer` claim rather
+than with a user that contains the  `storeOwner` claim.
+
+- #### "You aren't the correct storeOwner"
+Means you are logged with the correct claim, but you are trying to read others storeOwner's data.
+
+- #### "Requires authentication"
+
+## Authentication fields on Express Request Handler
 
 This project adds 3 new fields to the request object on the 
-express request handler:
+express request handler, 
+you can also customize this on `src/@types/express.d.ts` TypeScript file.
 
 ### `req.authenticated` 
 type: `boolean`
