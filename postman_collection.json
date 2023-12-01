@@ -8,11 +8,14 @@
 		{
 			"name": "1. Create Account",
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"name\":\"Rodrigo\",\n    \"role\":\"storeOwner\",\n    \"email\": \"rodrigo+6@wisetap.com\",\n    \"password\": \"123456\",\n    \"birthDateMillisecondsSinceEpoch\": 812469600000\n}\n",
+					"raw": "{\n    \"name\":\"Rodrigo\",\n    \"role\":\"storeOwner\",\n    \"email\": \"rodrigo@wisetap.com\",\n    \"password\": \"123456\",\n    \"birthDateMillisecondsSinceEpoch\": 812469600000\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -38,10 +41,10 @@
 		},
 		{
 			"name": "2. Login on Google APIS",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -54,7 +57,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key={apiKey}",
+					"raw": "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=<apiKey>",
 					"protocol": "https",
 					"host": [
 						"www",
@@ -70,7 +73,7 @@
 					"query": [
 						{
 							"key": "key",
-							"value": "{apiKey}",
+							"value": "<apiKey>",
 							"description": "The \"apiKey\" field from Firebase Credentials (Client side). Check the README file for more info"
 						}
 					]
@@ -81,15 +84,18 @@
 		{
 			"name": "3. Create Product",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "<idToken>",
+							"type": "string"
+						}
+					]
+				},
 				"method": "POST",
-				"header": [
-					{
-						"key": "idToken",
-						"value": "",
-						"description": "Insert your idToken here",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"name\": \"Blouse\",\n    \"price\": 20.60,\n    \"stockQuantity\": 100,\n    \"internalCode\": \"An example of field that only the storeOwner (of this store) can see\"\n}",
@@ -122,15 +128,18 @@
 				"disableBodyPruning": true
 			},
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "<idToken>",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
-				"header": [
-					{
-						"key": "idToken",
-						"value": "",
-						"type": "text",
-						"description": "Insert your idToken here"
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "",
@@ -163,15 +172,18 @@
 				"disableBodyPruning": true
 			},
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "<idToken>",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
-				"header": [
-					{
-						"key": "idToken",
-						"value": "",
-						"type": "text",
-						"description": "Insert your idToken here"
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "",
@@ -211,15 +223,18 @@
 				"disableBodyPruning": true
 			},
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "<idToken>",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
-				"header": [
-					{
-						"key": "idToken",
-						"value": "",
-						"type": "text",
-						"description": "Insert your idToken here"
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "",
@@ -257,15 +272,18 @@
 		{
 			"name": "7. Update Product",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "<idToken>",
+							"type": "string"
+						}
+					]
+				},
 				"method": "PUT",
-				"header": [
-					{
-						"key": "idToken",
-						"value": "",
-						"type": "text",
-						"description": "Insert your idToken here"
-					}
-				],
+				"header": [],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"price\": 33\n}",
