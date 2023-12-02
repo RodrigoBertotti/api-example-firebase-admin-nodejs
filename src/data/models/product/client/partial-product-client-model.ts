@@ -8,7 +8,7 @@ import {
 import {ProductClientModel} from "./product-client-model";
 
 
-export class PartialProductClientModel extends Product {
+export class PartialProductClientModel {
     private static _validate(body:any) {
         if (body[ProductClientModel.kName]) validateProductName(body[ProductClientModel.kName]);
         if (body[ProductClientModel.kPrice]) validateProductPrice(body[ProductClientModel.kPrice]);

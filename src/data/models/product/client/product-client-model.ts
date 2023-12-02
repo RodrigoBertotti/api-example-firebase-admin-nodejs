@@ -31,9 +31,9 @@ export class ProductClientModel extends Product {
         validateInternalCode(body[ProductClientModel.kInternalCode]);
     }
 
-    static validate (body: any, storeOwnerUid: string) : Product {
+    static validate (body: any, storeOwnerUid: string) : ProductClientModel {
         this._validate(body);
-        return new Product(
+        return new ProductClientModel(
             null,
             storeOwnerUid,
             body[ProductClientModel.kName],

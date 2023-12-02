@@ -23,7 +23,7 @@ export class ProductController implements Controller {
     }
 
     private readonly createProduct: RequestHandler = async (req, res, next,) => {
-        const productFromInput = ProductClientModel.validate(req.body, req.auth.uid);
+        const productFromInput: Product = ProductClientModel.validate(req.body, req.auth.uid);
         const product = await productsService.createProduct(productFromInput);
         const output = ProductClientModel.fromEntity(product).toBodyFullProduct();
         res.send(output);

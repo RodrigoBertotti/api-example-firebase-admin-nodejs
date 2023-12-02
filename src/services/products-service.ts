@@ -36,7 +36,7 @@ export class ProductsService {
     }
 
     async updateProductById(productId: string, partialProduct: Partial<Record<keyof Product, any>>): Promise<void> {
-        const documentData = PartialProductFirestoreModel.fromEntity(partialProduct).toDocumentData();
+        const documentData = PartialProductFirestoreModel.fromPartialEntity(partialProduct).toDocumentData();
         await this.doc(productId).update(documentData);
     }
 }
